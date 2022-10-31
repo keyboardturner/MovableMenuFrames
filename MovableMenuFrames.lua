@@ -8,7 +8,6 @@ local defaultsTable = {
 	locked = false,
 }
 
-MoveMenusF_DB = MoveMenusF_DB or defaultsTable
 
 local MenuFramePanel = CreateFrame("FRAME", "BagStuff");
 MenuFramePanel.name = "Movable Menu Frames";
@@ -25,7 +24,7 @@ MenuFramePanel.Version:SetFont(MenuFramePanel.Version:GetFont(), 12);
 MenuFramePanel.Version:SetTextColor(1,1,1,1);
 MenuFramePanel.Version:ClearAllPoints();
 MenuFramePanel.Version:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",400,-21);
-MenuFramePanel.Version:SetText("Version: " .. GetAddOnMetadata("MovableMenuFRames", "Version"));
+MenuFramePanel.Version:SetText("Version: " .. GetAddOnMetadata("MovableMenuFrames", "Version"));
 
 
 ------------------------------------------------------------------------------------------------------------------
@@ -139,7 +138,7 @@ end
 
 function MenuEventFrame.Stuff(frame,button)
 	frame:SetMovable(true);
-	MicroButtonAndBagsBar:EnableMouse(not MoveMenusF_DB.locked);
+	frame:EnableMouse(not MoveMenusF_DB.locked);
 	frame:SetUserPlaced(true);
 	frame:RegisterForDrag("LeftButton", "RightButton");
 	frame:SetClampedToScreen(true)
@@ -214,6 +213,7 @@ function MenuEventFrame:OnEvent(event,arg1)
 		MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusF_DB.MicromenuFrame.scale*100);
 		MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusF_DB.BagbuttonsFrame.scale*100);
 		MenuFramePanel.XPBarSlider:SetValue(MoveMenusF_DB.XPBarFrame.scale*100);
+		--MicroButtonAndBagsBar:EnableMouse(not MoveMenusF_DB.locked); -- this could maybe cause issues later, we'll see
 		MenuEventFrame.ReMoveStuff();
 		MenuEventFrame.Stuff(MicroButtonAndBagsBar);
 		MenuEventFrame.Stuff(MainMenuBarBackpackButton);
