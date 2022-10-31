@@ -5,6 +5,7 @@ local defaultsTable = {
 	MicromenuFrame = {show = true, checked = true, scale = 1, x = 0, y = 0, point = "BOTTOMRIGHT", relativePoint = "BOTTOMRIGHT"},
 	BagbuttonsFrame = {show = true, checked = true, scale = 1, x = 0, y = 37, point = "BOTTOMRIGHT", relativePoint = "BOTTOMRIGHT"},
 	XPBarFrame = {show = true, checked = true, scale = 1, x = 0, y = 0, point = "BOTTOM", relativePoint = "BOTTOM"},
+	QueueButton = {show = true, checked = true, scale = 1, x = 0, y = 0, point = "BOTTOM", relativePoint = "BOTTOM"},
 	locked = false,
 }
 
@@ -83,6 +84,24 @@ MenuFramePanel.XPBarSlider:SetScript("OnValueChanged", function()
 	StatusTrackingBarManager:SetScale(scaleValue);
 end)
 
+--Queue Status slider
+MenuFramePanel.QueueSlider = CreateFrame("Slider", "QueueSlider", MenuFramePanel, "OptionsSliderTemplate");
+MenuFramePanel.QueueSlider:SetWidth(300);
+MenuFramePanel.QueueSlider:SetHeight(15);
+MenuFramePanel.QueueSlider:SetMinMaxValues(50,150);
+MenuFramePanel.QueueSlider:SetValueStep(1);
+MenuFramePanel.QueueSlider:ClearAllPoints();
+MenuFramePanel.QueueSlider:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",12,-53*4);
+getglobal(MenuFramePanel.QueueSlider:GetName() .. 'Low'):SetText('50');
+getglobal(MenuFramePanel.QueueSlider:GetName() .. 'High'):SetText('150');
+getglobal(MenuFramePanel.QueueSlider:GetName() .. 'Text'):SetText('Queue Status Frame Size');
+MenuFramePanel.QueueSlider:SetScript("OnValueChanged", function()
+	local scaleValue = getglobal(MenuFramePanel.QueueSlider:GetName()):GetValue() / 100;
+	MoveMenusF_DB.QueueButton.scale = scaleValue;
+	MoveMenusF_DB.QueueButton.scale = scaleValue;
+	QueueStatusButton:SetScale(scaleValue);
+end)
+
 ------------------------------------------------------------------------------------------------------------------
 
 --frames movable
@@ -94,8 +113,12 @@ getglobal(MenuFramePanel.LockedCheckbox:GetName().."Text"):SetText("Frames Locke
 MenuFramePanel.LockedCheckbox:SetScript("OnClick", function(self)
 	if MenuFramePanel.LockedCheckbox:GetChecked() then
 		MoveMenusF_DB.locked = true;
+		MicroButtonAndBagsBar:EnableMouse(false)
+		QueueStatusButton:Hide()
 	else
 		MoveMenusF_DB.locked = false;
+		MicroButtonAndBagsBar:EnableMouse(true)
+		QueueStatusButton:Show()
 	end
 end);
 
@@ -118,6 +141,7 @@ InterfaceOptions_AddCategory(MenuFramePanel);
 local MenuEventFrame = CreateFrame("Frame");
 MenuEventFrame:RegisterEvent("ADDON_LOADED");
 MenuEventFrame:RegisterEvent("PLAYER_LOGOUT");
+MenuEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 
 function MenuEventFrame.ReMoveStuff()
@@ -133,12 +157,17 @@ function MenuEventFrame.ReMoveStuff()
 	StatusTrackingBarManager:ClearAllPoints()
 	StatusTrackingBarManager:SetPoint(MoveMenusF_DB.XPBarFrame.point, nil, MoveMenusF_DB.XPBarFrame.relativePoint, MoveMenusF_DB.XPBarFrame.x, MoveMenusF_DB.XPBarFrame.y);
 	StatusTrackingBarManager:SetScale(MoveMenusF_DB.XPBarFrame.scale);
+	QueueStatusButton:ClearAllPoints()
+	QueueStatusButton:SetPoint(MoveMenusF_DB.QueueButton.point, nil, MoveMenusF_DB.QueueButton.relativePoint, MoveMenusF_DB.QueueButton.x, MoveMenusF_DB.QueueButton.y);
+	QueueStatusButton:SetScale(MoveMenusF_DB.QueueButton.scale);
 end
 
 
 function MenuEventFrame.Stuff(frame,button)
 	frame:SetMovable(true);
-	frame:EnableMouse(not MoveMenusF_DB.locked);
+	if not MicroButtonAndBagsBar then
+		frame:EnableMouse(true);
+	end
 	frame:SetUserPlaced(true);
 	frame:RegisterForDrag("LeftButton", "RightButton");
 	frame:SetClampedToScreen(true)
@@ -194,6 +223,18 @@ function MenuEventFrame.Stuff(frame,button)
 			MoveMenusF_DB.XPBarFrame.x = xOfs
 			MoveMenusF_DB.XPBarFrame.y = yOfs
 		end
+		if QueueStatusButton then
+			Mixin(self, BackdropTemplateMixin);
+			frame:SetBackdropColor(0,0,0,0);
+			self:StopMovingOrSizing();
+			self.isMoving = false;
+			local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint();
+
+			MoveMenusF_DB.QueueButton.point = point
+			MoveMenusF_DB.QueueButton.relativePoint = relativePoint
+			MoveMenusF_DB.QueueButton.x = xOfs
+			MoveMenusF_DB.QueueButton.y = yOfs
+		end
 	end);
 end
 
@@ -210,19 +251,32 @@ function MenuEventFrame:OnEvent(event,arg1)
 		if not MoveMenusF_DB.locked then
 			MoveMenusF_DB.locked = defaultsTable.locked;
 		end
+		if MoveMenusF_DB.locked == false then
+			MicroButtonAndBagsBar:EnableMouse(true)
+			QueueStatusButton:Show()
+		end
 		MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusF_DB.MicromenuFrame.scale*100);
 		MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusF_DB.BagbuttonsFrame.scale*100);
 		MenuFramePanel.XPBarSlider:SetValue(MoveMenusF_DB.XPBarFrame.scale*100);
-		--MicroButtonAndBagsBar:EnableMouse(not MoveMenusF_DB.locked); -- this could maybe cause issues later, we'll see
+		MenuFramePanel.QueueSlider:SetValue(MoveMenusF_DB.QueueButton.scale*100);
+		MicroButtonAndBagsBar:EnableMouse(not MoveMenusF_DB.locked); -- this could maybe cause issues later, we'll see
 		MenuEventFrame.ReMoveStuff();
 		MenuEventFrame.Stuff(MicroButtonAndBagsBar);
 		MenuEventFrame.Stuff(MainMenuBarBackpackButton);
 		MenuEventFrame.Stuff(StatusTrackingBarManager);
+		MenuEventFrame.Stuff(QueueStatusButton);
 	end
 	if event == "PLAYER_LOGOUT" then
 		MicroButtonAndBagsBar:ClearAllPoints();
 		MainMenuBarBackpackButton:ClearAllPoints();
 		StatusTrackingBarManager:ClearAllPoints();
+	end
+	if event == "PLAYER_ENTERING_WORLD" then
+		MicroButtonAndBagsBar:EnableMouse(false)
+		if MoveMenusF_DB.locked == false then
+			MicroButtonAndBagsBar:EnableMouse(true)
+			QueueStatusButton:Show()
+		end
 	end
 end
 MenuEventFrame:SetScript("OnEvent",MenuEventFrame.OnEvent);
