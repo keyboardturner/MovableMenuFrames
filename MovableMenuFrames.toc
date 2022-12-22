@@ -2,7 +2,8 @@
 ## Title: Movable Menu Frames
 ## Notes: Allows the micromenu, bag buttons, and XP Bar frames to be resizeable and movable.
 ## Author: Keyboardturn
-## Version: 0.0.3
+## Version: 0.0.4
 ## SavedVariablesPerCharacter: MoveMenusF_DB
+## SavedVariables: MoveMenusALL_DB
 
 MovableMenuFrames.lua

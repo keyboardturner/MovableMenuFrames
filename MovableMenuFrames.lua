@@ -7,8 +7,10 @@ local defaultsTable = {
 	XPBarFrame = {show = true, checked = true, scale = 1, x = 0, y = 0, point = "BOTTOM", relativePoint = "BOTTOM"},
 	QueueButton = {show = true, checked = true, scale = 1, x = 0, y = 0, point = "BOTTOM", relativePoint = "BOTTOM"},
 	locked = false,
+	account = true,
 }
 
+local MenuEventFrame = CreateFrame("Frame");
 
 local MenuFramePanel = CreateFrame("FRAME", "BagStuff");
 MenuFramePanel.name = "Movable Menu Frames";
@@ -44,6 +46,7 @@ getglobal(MenuFramePanel.MicroMenuSlider:GetName() .. 'Text'):SetText('Micromenu
 MenuFramePanel.MicroMenuSlider:SetScript("OnValueChanged", function()
 	local scaleValue = getglobal(MenuFramePanel.MicroMenuSlider:GetName()):GetValue() / 100;
 	MoveMenusF_DB.MicromenuFrame.scale = scaleValue;
+	MoveMenusALL_DB.MicromenuFrame.scale = scaleValue;
 	MicroButtonAndBagsBar:SetScale(scaleValue);
 end)
 
@@ -62,7 +65,7 @@ getglobal(MenuFramePanel.BagButtonsSlider:GetName() .. 'Text'):SetText('Bag Butt
 MenuFramePanel.BagButtonsSlider:SetScript("OnValueChanged", function()
 	local scaleValue = getglobal(MenuFramePanel.BagButtonsSlider:GetName()):GetValue() / 100;
 	MoveMenusF_DB.BagbuttonsFrame.scale = scaleValue;
-	MoveMenusF_DB.BagbuttonsFrame.scale = scaleValue;
+	MoveMenusALL_DB.BagbuttonsFrame.scale = scaleValue;
 	MainMenuBarBackpackButton:SetScale(scaleValue);
 end)
 
@@ -80,7 +83,7 @@ getglobal(MenuFramePanel.XPBarSlider:GetName() .. 'Text'):SetText('XP Bar Frame 
 MenuFramePanel.XPBarSlider:SetScript("OnValueChanged", function()
 	local scaleValue = getglobal(MenuFramePanel.XPBarSlider:GetName()):GetValue() / 100;
 	MoveMenusF_DB.XPBarFrame.scale = scaleValue;
-	MoveMenusF_DB.XPBarFrame.scale = scaleValue;
+	MoveMenusALL_DB.XPBarFrame.scale = scaleValue;
 	StatusTrackingBarManager:SetScale(scaleValue);
 end)
 
@@ -98,7 +101,7 @@ getglobal(MenuFramePanel.QueueSlider:GetName() .. 'Text'):SetText('Queue Status 
 MenuFramePanel.QueueSlider:SetScript("OnValueChanged", function()
 	local scaleValue = getglobal(MenuFramePanel.QueueSlider:GetName()):GetValue() / 100;
 	MoveMenusF_DB.QueueButton.scale = scaleValue;
-	MoveMenusF_DB.QueueButton.scale = scaleValue;
+	MoveMenusALL_DB.QueueButton.scale = scaleValue;
 	QueueStatusButton:SetScale(scaleValue);
 end)
 
@@ -112,13 +115,31 @@ getglobal(MenuFramePanel.LockedCheckbox:GetName().."Text"):SetText("Frames Locke
 
 MenuFramePanel.LockedCheckbox:SetScript("OnClick", function(self)
 	if MenuFramePanel.LockedCheckbox:GetChecked() then
-		MoveMenusF_DB.locked = true;
+		MoveMenusALL_DB.locked = true;
 		MicroButtonAndBagsBar:EnableMouse(false)
 		QueueStatusButton:Hide()
 	else
-		MoveMenusF_DB.locked = false;
+		MoveMenusALL_DB.locked = false;
 		MicroButtonAndBagsBar:EnableMouse(true)
 		QueueStatusButton:Show()
+	end
+end);
+
+------------------------------------------------------------------------------------------------------------------
+
+--frames movable
+MenuFramePanel.AccountCheckbox = CreateFrame("CheckButton", "AccountCheckbox", MenuFramePanel, "UICheckButtonTemplate");
+MenuFramePanel.AccountCheckbox:ClearAllPoints();
+MenuFramePanel.AccountCheckbox:SetPoint("TOPLEFT", 350, -53*2);
+getglobal(MenuFramePanel.AccountCheckbox:GetName().."Text"):SetText("Account-Wide Settings");
+
+MenuFramePanel.AccountCheckbox:SetScript("OnClick", function(self)
+	if MenuFramePanel.AccountCheckbox:GetChecked() then
+		MoveMenusALL_DB.account = true;
+		MenuEventFrame.ReMoveStuff()
+	else
+		MoveMenusALL_DB.account = false;
+		MenuEventFrame.ReMoveStuff()
 	end
 end);
 
@@ -137,8 +158,6 @@ InterfaceOptions_AddCategory(MenuFramePanel);
 --StatusTrackingBarManager
 --defaults: BOTTOM UIParent BOTTOM 0 0
 
-
-local MenuEventFrame = CreateFrame("Frame");
 MenuEventFrame:RegisterEvent("ADDON_LOADED");
 MenuEventFrame:RegisterEvent("PLAYER_LOGOUT");
 MenuEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -146,20 +165,53 @@ MenuEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 function MenuEventFrame.ReMoveStuff()
 
-	MenuFramePanel.LockedCheckbox:SetChecked(MoveMenusF_DB.locked);
+	MenuFramePanel.LockedCheckbox:SetChecked(MoveMenusALL_DB.locked);
+	MenuFramePanel.AccountCheckbox:SetChecked(MoveMenusALL_DB.account);
 
-	MicroButtonAndBagsBar:ClearAllPoints()
-	MicroButtonAndBagsBar:SetPoint(MoveMenusF_DB.MicromenuFrame.point, nil, MoveMenusF_DB.MicromenuFrame.relativePoint, MoveMenusF_DB.MicromenuFrame.x, MoveMenusF_DB.MicromenuFrame.y);
-	MicroButtonAndBagsBar:SetScale(MoveMenusF_DB.MicromenuFrame.scale);
-	MainMenuBarBackpackButton:ClearAllPoints()
-	MainMenuBarBackpackButton:SetPoint(MoveMenusF_DB.BagbuttonsFrame.point, UIParent, MoveMenusF_DB.BagbuttonsFrame.relativePoint, MoveMenusF_DB.BagbuttonsFrame.x, MoveMenusF_DB.BagbuttonsFrame.y);
-	MainMenuBarBackpackButton:SetScale(MoveMenusF_DB.BagbuttonsFrame.scale);
-	StatusTrackingBarManager:ClearAllPoints()
-	StatusTrackingBarManager:SetPoint(MoveMenusF_DB.XPBarFrame.point, nil, MoveMenusF_DB.XPBarFrame.relativePoint, MoveMenusF_DB.XPBarFrame.x, MoveMenusF_DB.XPBarFrame.y);
-	StatusTrackingBarManager:SetScale(MoveMenusF_DB.XPBarFrame.scale);
-	QueueStatusButton:ClearAllPoints()
-	QueueStatusButton:SetPoint(MoveMenusF_DB.QueueButton.point, nil, MoveMenusF_DB.QueueButton.relativePoint, MoveMenusF_DB.QueueButton.x, MoveMenusF_DB.QueueButton.y);
-	QueueStatusButton:SetScale(MoveMenusF_DB.QueueButton.scale);
+	if MoveMenusALL_DB.account == true then -- account settings
+
+		MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusALL_DB.MicromenuFrame.scale*100);
+		MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusALL_DB.BagbuttonsFrame.scale*100);
+		MenuFramePanel.XPBarSlider:SetValue(MoveMenusALL_DB.XPBarFrame.scale*100);
+		MenuFramePanel.QueueSlider:SetValue(MoveMenusALL_DB.QueueButton.scale*100);
+		
+		MicroButtonAndBagsBar:ClearAllPoints()
+		MicroButtonAndBagsBar:SetPoint(MoveMenusALL_DB.MicromenuFrame.point, UIParent, MoveMenusALL_DB.MicromenuFrame.relativePoint, MoveMenusALL_DB.MicromenuFrame.x, MoveMenusALL_DB.MicromenuFrame.y);
+		MicroButtonAndBagsBar:SetScale(MoveMenusALL_DB.MicromenuFrame.scale);
+		MainMenuBarBackpackButton:ClearAllPoints()
+		MainMenuBarBackpackButton:SetPoint(MoveMenusALL_DB.BagbuttonsFrame.point, UIParent, MoveMenusALL_DB.BagbuttonsFrame.relativePoint, MoveMenusALL_DB.BagbuttonsFrame.x, MoveMenusALL_DB.BagbuttonsFrame.y);
+		MainMenuBarBackpackButton:SetScale(MoveMenusALL_DB.BagbuttonsFrame.scale);
+		StatusTrackingBarManager:ClearAllPoints()
+		StatusTrackingBarManager:SetPoint(MoveMenusALL_DB.XPBarFrame.point, UIParent, MoveMenusALL_DB.XPBarFrame.relativePoint, MoveMenusALL_DB.XPBarFrame.x, MoveMenusALL_DB.XPBarFrame.y);
+		StatusTrackingBarManager:SetScale(MoveMenusALL_DB.XPBarFrame.scale);
+		QueueStatusButton:ClearAllPoints()
+		QueueStatusButton:SetPoint(MoveMenusALL_DB.QueueButton.point, UIParent, MoveMenusALL_DB.QueueButton.relativePoint, MoveMenusALL_DB.QueueButton.x, MoveMenusALL_DB.QueueButton.y);
+		QueueStatusButton:SetScale(MoveMenusALL_DB.QueueButton.scale);
+
+	end
+
+	if MoveMenusALL_DB.account == false then -- character specific settings
+
+		MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusF_DB.MicromenuFrame.scale*100);
+		MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusF_DB.BagbuttonsFrame.scale*100);
+		MenuFramePanel.XPBarSlider:SetValue(MoveMenusF_DB.XPBarFrame.scale*100);
+		MenuFramePanel.QueueSlider:SetValue(MoveMenusF_DB.QueueButton.scale*100);
+
+		MicroButtonAndBagsBar:ClearAllPoints()
+		MicroButtonAndBagsBar:SetPoint(MoveMenusF_DB.MicromenuFrame.point, UIParent, MoveMenusF_DB.MicromenuFrame.relativePoint, MoveMenusF_DB.MicromenuFrame.x, MoveMenusF_DB.MicromenuFrame.y);
+		MicroButtonAndBagsBar:SetScale(MoveMenusF_DB.MicromenuFrame.scale);
+		MainMenuBarBackpackButton:ClearAllPoints()
+		MainMenuBarBackpackButton:SetPoint(MoveMenusF_DB.BagbuttonsFrame.point, UIParent, MoveMenusF_DB.BagbuttonsFrame.relativePoint, MoveMenusF_DB.BagbuttonsFrame.x, MoveMenusF_DB.BagbuttonsFrame.y);
+		MainMenuBarBackpackButton:SetScale(MoveMenusF_DB.BagbuttonsFrame.scale);
+		StatusTrackingBarManager:ClearAllPoints()
+		StatusTrackingBarManager:SetPoint(MoveMenusF_DB.XPBarFrame.point, UIParent, MoveMenusF_DB.XPBarFrame.relativePoint, MoveMenusF_DB.XPBarFrame.x, MoveMenusF_DB.XPBarFrame.y);
+		StatusTrackingBarManager:SetScale(MoveMenusF_DB.XPBarFrame.scale);
+		QueueStatusButton:ClearAllPoints()
+		QueueStatusButton:SetPoint(MoveMenusF_DB.QueueButton.point, UIParent, MoveMenusF_DB.QueueButton.relativePoint, MoveMenusF_DB.QueueButton.x, MoveMenusF_DB.QueueButton.y);
+		QueueStatusButton:SetScale(MoveMenusF_DB.QueueButton.scale);
+
+	end
+
 end
 
 
@@ -173,7 +225,7 @@ function MenuEventFrame.Stuff(frame,button)
 	frame:SetClampedToScreen(true)
 
 	frame:SetScript("OnMouseDown", function(self, button)
-		if MoveMenusF_DB.locked == false then
+		if MoveMenusALL_DB.locked == false then
 			if button == "LeftButton" and not self.isMoving then
 				Mixin(self, BackdropTemplateMixin);
 				frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", insets = { left = -30, right = -1, top = -1, bottom = -1 }});
@@ -186,85 +238,145 @@ function MenuEventFrame.Stuff(frame,button)
 		end
 	end);
 	frame:SetScript("OnMouseUp", function(self)
-		if MicroButtonAndBagsBar then
+		if frame == MicroButtonAndBagsBar then
 			Mixin(self, BackdropTemplateMixin);
 			frame:SetBackdropColor(0,0,0,0);
 			self:StopMovingOrSizing();
 			self.isMoving = false;
 			local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint();
 
-			MoveMenusF_DB.MicromenuFrame.point = point
-			MoveMenusF_DB.MicromenuFrame.relativePoint = relativePoint
-			MoveMenusF_DB.MicromenuFrame.x = xOfs
-			MoveMenusF_DB.MicromenuFrame.y = yOfs
+			if MoveMenusALL_DB.account == true then
+
+				MoveMenusALL_DB.MicromenuFrame.point = point
+				MoveMenusALL_DB.MicromenuFrame.relativePoint = relativePoint
+				MoveMenusALL_DB.MicromenuFrame.x = xOfs
+				MoveMenusALL_DB.MicromenuFrame.y = yOfs
+				
+			end
+
+			if MoveMenusALL_DB.account == false then
+
+				MoveMenusF_DB.MicromenuFrame.point = point
+				MoveMenusF_DB.MicromenuFrame.relativePoint = relativePoint
+				MoveMenusF_DB.MicromenuFrame.x = xOfs
+				MoveMenusF_DB.MicromenuFrame.y = yOfs
+
+			end
 		end
-		if MainMenuBarBackpackButton then
+		if frame == MainMenuBarBackpackButton then
 			Mixin(self, BackdropTemplateMixin);
 			frame:SetBackdropColor(0,0,0,0);
 			self:StopMovingOrSizing();
 			self.isMoving = false;
 			local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint();
 
-			MoveMenusF_DB.BagbuttonsFrame.point = point
-			MoveMenusF_DB.BagbuttonsFrame.relativePoint = relativePoint
-			MoveMenusF_DB.BagbuttonsFrame.x = xOfs
-			MoveMenusF_DB.BagbuttonsFrame.y = yOfs
+			if MoveMenusALL_DB.account == true then
+
+				MoveMenusALL_DB.BagbuttonsFrame.point = point
+				MoveMenusALL_DB.BagbuttonsFrame.relativePoint = relativePoint
+				MoveMenusALL_DB.BagbuttonsFrame.x = xOfs
+				MoveMenusALL_DB.BagbuttonsFrame.y = yOfs
+
+			end
+
+			if MoveMenusALL_DB.account == false then
+
+				MoveMenusF_DB.BagbuttonsFrame.point = point
+				MoveMenusF_DB.BagbuttonsFrame.relativePoint = relativePoint
+				MoveMenusF_DB.BagbuttonsFrame.x = xOfs
+				MoveMenusF_DB.BagbuttonsFrame.y = yOfs
+
+			end
 
 		end
-		if StatusTrackingBarManager then
+		if frame == StatusTrackingBarManager then
 			Mixin(self, BackdropTemplateMixin);
 			frame:SetBackdropColor(0,0,0,0);
 			self:StopMovingOrSizing();
 			self.isMoving = false;
 			local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint();
 
-			MoveMenusF_DB.XPBarFrame.point = point
-			MoveMenusF_DB.XPBarFrame.relativePoint = relativePoint
-			MoveMenusF_DB.XPBarFrame.x = xOfs
-			MoveMenusF_DB.XPBarFrame.y = yOfs
+			if MoveMenusALL_DB.account == true then
+
+				MoveMenusALL_DB.XPBarFrame.point = point
+				MoveMenusALL_DB.XPBarFrame.relativePoint = relativePoint
+				MoveMenusALL_DB.XPBarFrame.x = xOfs
+				MoveMenusALL_DB.XPBarFrame.y = yOfs
+
+			end
+
+			if MoveMenusALL_DB.account == false then
+
+				MoveMenusF_DB.XPBarFrame.point = point
+				MoveMenusF_DB.XPBarFrame.relativePoint = relativePoint
+				MoveMenusF_DB.XPBarFrame.x = xOfs
+				MoveMenusF_DB.XPBarFrame.y = yOfs
+			end
 		end
-		if QueueStatusButton then
+		if frame == QueueStatusButton then
 			Mixin(self, BackdropTemplateMixin);
 			frame:SetBackdropColor(0,0,0,0);
 			self:StopMovingOrSizing();
 			self.isMoving = false;
 			local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint();
 
-			MoveMenusF_DB.QueueButton.point = point
-			MoveMenusF_DB.QueueButton.relativePoint = relativePoint
-			MoveMenusF_DB.QueueButton.x = xOfs
-			MoveMenusF_DB.QueueButton.y = yOfs
+			if MoveMenusALL_DB.account == true then
+
+				MoveMenusALL_DB.QueueButton.point = point
+				MoveMenusALL_DB.QueueButton.relativePoint = relativePoint
+				MoveMenusALL_DB.QueueButton.x = xOfs
+				MoveMenusALL_DB.QueueButton.y = yOfs
+
+			end
+
+			if MoveMenusALL_DB.account == false then
+
+				MoveMenusF_DB.QueueButton.point = point
+				MoveMenusF_DB.QueueButton.relativePoint = relativePoint
+				MoveMenusF_DB.QueueButton.x = xOfs
+				MoveMenusF_DB.QueueButton.y = yOfs
+			end
 		end
 	end);
 end
 
 function MenuEventFrame:OnEvent(event,arg1)
 	if event == "ADDON_LOADED" and arg1 == "MovableMenuFrames" then
+		if not MoveMenusALL_DB then
+			if MoveMenusF_DB then
+				MoveMenusALL_DB = MoveMenusF_DB;
+			end
+		end
 		if not MoveMenusF_DB then
 			MoveMenusF_DB = defaultsTable;
 		end
+		if not MoveMenusALL_DB then
+			MoveMenusALL_DB = defaultsTable;
+		end
+		if not MoveMenusALL_DB.account then
+			MoveMenusALL_DB.account = true
+		end
+
 		if not MoveMenusF_DB.MicromenuFrame.scale then
 			MoveMenusF_DB.MicromenuFrame.scale = defaultsTable.MicromenuFrame.scale;
 			MoveMenusF_DB.BagbuttonsFrame.scale = defaultsTable.BagbuttonsFrame.scale;
 			MoveMenusF_DB.XPBarFrame.scale = defaultsTable.XPBarFrame.scale;
 		end
-		if not MoveMenusF_DB.locked then
-			MoveMenusF_DB.locked = defaultsTable.locked;
+		if not MoveMenusALL_DB.locked then
+			MoveMenusALL_DB.locked = defaultsTable.locked;
 		end
-		if MoveMenusF_DB.locked == false then
+		if MoveMenusALL_DB.locked == false then
 			MicroButtonAndBagsBar:EnableMouse(true)
 			QueueStatusButton:Show()
 		end
-		MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusF_DB.MicromenuFrame.scale*100);
-		MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusF_DB.BagbuttonsFrame.scale*100);
-		MenuFramePanel.XPBarSlider:SetValue(MoveMenusF_DB.XPBarFrame.scale*100);
-		MenuFramePanel.QueueSlider:SetValue(MoveMenusF_DB.QueueButton.scale*100);
-		MicroButtonAndBagsBar:EnableMouse(not MoveMenusF_DB.locked); -- this could maybe cause issues later, we'll see
-		MenuEventFrame.ReMoveStuff();
+		MicroButtonAndBagsBar:EnableMouse(not MoveMenusALL_DB.locked); -- this could maybe cause issues later, we'll see
 		MenuEventFrame.Stuff(MicroButtonAndBagsBar);
 		MenuEventFrame.Stuff(MainMenuBarBackpackButton);
 		MenuEventFrame.Stuff(StatusTrackingBarManager);
 		MenuEventFrame.Stuff(QueueStatusButton);
+
+		MenuEventFrame.ReMoveStuff()
+		
 	end
 	if event == "PLAYER_LOGOUT" then
 		MicroButtonAndBagsBar:ClearAllPoints();
@@ -273,7 +385,7 @@ function MenuEventFrame:OnEvent(event,arg1)
 	end
 	if event == "PLAYER_ENTERING_WORLD" then
 		MicroButtonAndBagsBar:EnableMouse(false)
-		if MoveMenusF_DB.locked == false then
+		if MoveMenusALL_DB.locked == false then
 			MicroButtonAndBagsBar:EnableMouse(true)
 			QueueStatusButton:Show()
 		end
