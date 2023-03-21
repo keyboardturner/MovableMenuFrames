@@ -29,10 +29,18 @@ MenuFramePanel.Version:ClearAllPoints();
 MenuFramePanel.Version:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",400,-21);
 MenuFramePanel.Version:SetText("Version: " .. GetAddOnMetadata("MovableMenuFrames", "Version"));
 
+MenuFramePanel.Update = MenuFramePanel:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+MenuFramePanel.Update:SetFont(MenuFramePanel.Update:GetFont(), 14);
+MenuFramePanel.Update:SetTextColor(1,1,1,1);
+MenuFramePanel.Update:ClearAllPoints();
+MenuFramePanel.Update:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",12,-200);
+MenuFramePanel.Update:SetText("Patch 10.0.5 Edit Mode now mostly handles scaling and placement of frames!");
+
 
 ------------------------------------------------------------------------------------------------------------------
 
 --menu slider
+--[[ -- defunct in 10.0.5
 MenuFramePanel.MicroMenuSlider = CreateFrame("Slider", "MenuFrameScaleSlider", MenuFramePanel, "OptionsSliderTemplate");
 MenuFramePanel.MicroMenuSlider:SetWidth(300);
 MenuFramePanel.MicroMenuSlider:SetHeight(15);
@@ -49,9 +57,10 @@ MenuFramePanel.MicroMenuSlider:SetScript("OnValueChanged", function()
 	MoveMenusALL_DB.MicromenuFrame.scale = scaleValue;
 	MicroButtonAndBagsBar:SetScale(scaleValue);
 end)
-
+]]
 
 --buttons slider
+--[[ -- defunct in 10.0.5
 MenuFramePanel.BagButtonsSlider = CreateFrame("Slider", "BagButtonsSlider", MenuFramePanel, "OptionsSliderTemplate");
 MenuFramePanel.BagButtonsSlider:SetWidth(300);
 MenuFramePanel.BagButtonsSlider:SetHeight(15);
@@ -68,6 +77,7 @@ MenuFramePanel.BagButtonsSlider:SetScript("OnValueChanged", function()
 	MoveMenusALL_DB.BagbuttonsFrame.scale = scaleValue;
 	MainMenuBarBackpackButton:SetScale(scaleValue);
 end)
+]]
 
 --xp bar slider
 MenuFramePanel.XPBarSlider = CreateFrame("Slider", "XPBarSlider", MenuFramePanel, "OptionsSliderTemplate");
@@ -76,7 +86,7 @@ MenuFramePanel.XPBarSlider:SetHeight(15);
 MenuFramePanel.XPBarSlider:SetMinMaxValues(50,150);
 MenuFramePanel.XPBarSlider:SetValueStep(1);
 MenuFramePanel.XPBarSlider:ClearAllPoints();
-MenuFramePanel.XPBarSlider:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",12,-53*3);
+MenuFramePanel.XPBarSlider:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",12,-53);
 getglobal(MenuFramePanel.XPBarSlider:GetName() .. 'Low'):SetText('50');
 getglobal(MenuFramePanel.XPBarSlider:GetName() .. 'High'):SetText('150');
 getglobal(MenuFramePanel.XPBarSlider:GetName() .. 'Text'):SetText('XP Bar Frame Size');
@@ -94,7 +104,7 @@ MenuFramePanel.QueueSlider:SetHeight(15);
 MenuFramePanel.QueueSlider:SetMinMaxValues(50,150);
 MenuFramePanel.QueueSlider:SetValueStep(1);
 MenuFramePanel.QueueSlider:ClearAllPoints();
-MenuFramePanel.QueueSlider:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",12,-53*4);
+MenuFramePanel.QueueSlider:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",12,-53*2);
 getglobal(MenuFramePanel.QueueSlider:GetName() .. 'Low'):SetText('50');
 getglobal(MenuFramePanel.QueueSlider:GetName() .. 'High'):SetText('150');
 getglobal(MenuFramePanel.QueueSlider:GetName() .. 'Text'):SetText('Queue Status Frame Size');
@@ -170,11 +180,12 @@ function MenuEventFrame.ReMoveStuff()
 
 	if MoveMenusALL_DB.account == true then -- account settings
 
-		MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusALL_DB.MicromenuFrame.scale*100);
-		MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusALL_DB.BagbuttonsFrame.scale*100);
+		--MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusALL_DB.MicromenuFrame.scale*100);
+		--MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusALL_DB.BagbuttonsFrame.scale*100);
 		MenuFramePanel.XPBarSlider:SetValue(MoveMenusALL_DB.XPBarFrame.scale*100);
 		MenuFramePanel.QueueSlider:SetValue(MoveMenusALL_DB.QueueButton.scale*100);
 		
+		--[[ -- defunct in 10.0.5
 		MicroButtonAndBagsBar:ClearAllPoints()
 		MicroButtonAndBagsBar:SetPoint(MoveMenusALL_DB.MicromenuFrame.point, UIParent, MoveMenusALL_DB.MicromenuFrame.relativePoint, MoveMenusALL_DB.MicromenuFrame.x, MoveMenusALL_DB.MicromenuFrame.y);
 		MicroButtonAndBagsBar:SetScale(MoveMenusALL_DB.MicromenuFrame.scale);
@@ -183,20 +194,23 @@ function MenuEventFrame.ReMoveStuff()
 		MainMenuBarBackpackButton:SetScale(MoveMenusALL_DB.BagbuttonsFrame.scale);
 		StatusTrackingBarManager:ClearAllPoints()
 		StatusTrackingBarManager:SetPoint(MoveMenusALL_DB.XPBarFrame.point, UIParent, MoveMenusALL_DB.XPBarFrame.relativePoint, MoveMenusALL_DB.XPBarFrame.x, MoveMenusALL_DB.XPBarFrame.y);
-		StatusTrackingBarManager:SetScale(MoveMenusALL_DB.XPBarFrame.scale);
+		]]
 		QueueStatusButton:ClearAllPoints()
 		QueueStatusButton:SetPoint(MoveMenusALL_DB.QueueButton.point, UIParent, MoveMenusALL_DB.QueueButton.relativePoint, MoveMenusALL_DB.QueueButton.x, MoveMenusALL_DB.QueueButton.y);
 		QueueStatusButton:SetScale(MoveMenusALL_DB.QueueButton.scale);
+
+		StatusTrackingBarManager:SetScale(MoveMenusALL_DB.XPBarFrame.scale);
 
 	end
 
 	if MoveMenusALL_DB.account == false then -- character specific settings
 
-		MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusF_DB.MicromenuFrame.scale*100);
-		MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusF_DB.BagbuttonsFrame.scale*100);
+		--MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusF_DB.MicromenuFrame.scale*100);
+		--MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusF_DB.BagbuttonsFrame.scale*100);
 		MenuFramePanel.XPBarSlider:SetValue(MoveMenusF_DB.XPBarFrame.scale*100);
-		MenuFramePanel.QueueSlider:SetValue(MoveMenusF_DB.QueueButton.scale*100);
+		--MenuFramePanel.QueueSlider:SetValue(MoveMenusF_DB.QueueButton.scale*100);
 
+		--[[ -- defunct in 10.0.5
 		MicroButtonAndBagsBar:ClearAllPoints()
 		MicroButtonAndBagsBar:SetPoint(MoveMenusF_DB.MicromenuFrame.point, UIParent, MoveMenusF_DB.MicromenuFrame.relativePoint, MoveMenusF_DB.MicromenuFrame.x, MoveMenusF_DB.MicromenuFrame.y);
 		MicroButtonAndBagsBar:SetScale(MoveMenusF_DB.MicromenuFrame.scale);
@@ -205,10 +219,12 @@ function MenuEventFrame.ReMoveStuff()
 		MainMenuBarBackpackButton:SetScale(MoveMenusF_DB.BagbuttonsFrame.scale);
 		StatusTrackingBarManager:ClearAllPoints()
 		StatusTrackingBarManager:SetPoint(MoveMenusF_DB.XPBarFrame.point, UIParent, MoveMenusF_DB.XPBarFrame.relativePoint, MoveMenusF_DB.XPBarFrame.x, MoveMenusF_DB.XPBarFrame.y);
-		StatusTrackingBarManager:SetScale(MoveMenusF_DB.XPBarFrame.scale);
+		]]
 		QueueStatusButton:ClearAllPoints()
 		QueueStatusButton:SetPoint(MoveMenusF_DB.QueueButton.point, UIParent, MoveMenusF_DB.QueueButton.relativePoint, MoveMenusF_DB.QueueButton.x, MoveMenusF_DB.QueueButton.y);
 		QueueStatusButton:SetScale(MoveMenusF_DB.QueueButton.scale);
+
+		StatusTrackingBarManager:SetScale(MoveMenusF_DB.XPBarFrame.scale);
 
 	end
 
@@ -238,6 +254,7 @@ function MenuEventFrame.Stuff(frame,button)
 		end
 	end);
 	frame:SetScript("OnMouseUp", function(self)
+		--[[ -- defunct in 10.0.5
 		if frame == MicroButtonAndBagsBar then
 			Mixin(self, BackdropTemplateMixin);
 			frame:SetBackdropColor(0,0,0,0);
@@ -289,6 +306,7 @@ function MenuEventFrame.Stuff(frame,button)
 			end
 
 		end
+		]]
 		if frame == StatusTrackingBarManager then
 			Mixin(self, BackdropTemplateMixin);
 			frame:SetBackdropColor(0,0,0,0);
@@ -369,10 +387,10 @@ function MenuEventFrame:OnEvent(event,arg1)
 			MicroButtonAndBagsBar:EnableMouse(true)
 			QueueStatusButton:Show()
 		end
-		MicroButtonAndBagsBar:EnableMouse(not MoveMenusALL_DB.locked); -- this could maybe cause issues later, we'll see
-		MenuEventFrame.Stuff(MicroButtonAndBagsBar);
-		MenuEventFrame.Stuff(MainMenuBarBackpackButton);
-		MenuEventFrame.Stuff(StatusTrackingBarManager);
+		--MicroButtonAndBagsBar:EnableMouse(not MoveMenusALL_DB.locked); -- this could maybe cause issues later, we'll see
+		--MenuEventFrame.Stuff(MicroButtonAndBagsBar);
+		--MenuEventFrame.Stuff(MainMenuBarBackpackButton);
+		--MenuEventFrame.Stuff(StatusTrackingBarManager); --(movement is now handled by default UI)
 		MenuEventFrame.Stuff(QueueStatusButton);
 
 		MenuEventFrame.ReMoveStuff()

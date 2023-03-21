@@ -1,8 +1,8 @@
-## Interface: 100002
+## Interface: 100007
 ## Title: Movable Menu Frames
 ## Notes: Allows the micromenu, bag buttons, and XP Bar frames to be resizeable and movable.
 ## Author: Keyboardturn
-## Version: 0.0.4
+## Version: 0.0.6
 ## SavedVariablesPerCharacter: MoveMenusF_DB
 ## SavedVariables: MoveMenusALL_DB
 
