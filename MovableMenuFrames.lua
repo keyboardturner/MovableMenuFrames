@@ -34,7 +34,7 @@ MenuFramePanel.Update:SetFont(MenuFramePanel.Update:GetFont(), 14);
 MenuFramePanel.Update:SetTextColor(1,1,1,1);
 MenuFramePanel.Update:ClearAllPoints();
 MenuFramePanel.Update:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",12,-200);
-MenuFramePanel.Update:SetText("Patch 10.0.5 Edit Mode now mostly handles scaling and placement of frames!");
+MenuFramePanel.Update:SetText("Patch 10.1.0\nBlizz permanently connects the Queue Status Button to the Menu and handles Eye Size.\n\nPatch 10.0.5\nEdit Mode now mostly handles scaling and placement of most frames!");
 
 
 ------------------------------------------------------------------------------------------------------------------
@@ -98,6 +98,7 @@ MenuFramePanel.XPBarSlider:SetScript("OnValueChanged", function()
 end)
 
 --Queue Status slider
+--[[ --Farewell, dungeon eyeball.
 MenuFramePanel.QueueSlider = CreateFrame("Slider", "QueueSlider", MenuFramePanel, "OptionsSliderTemplate");
 MenuFramePanel.QueueSlider:SetWidth(300);
 MenuFramePanel.QueueSlider:SetHeight(15);
@@ -114,14 +115,17 @@ MenuFramePanel.QueueSlider:SetScript("OnValueChanged", function()
 	MoveMenusALL_DB.QueueButton.scale = scaleValue;
 	QueueStatusButton:SetScale(scaleValue);
 end)
+]]
 
 ------------------------------------------------------------------------------------------------------------------
 
 --frames movable
+--[[ --Farewell, dungeon eyeball.
 MenuFramePanel.LockedCheckbox = CreateFrame("CheckButton", "LockedCheckbox", MenuFramePanel, "UICheckButtonTemplate");
 MenuFramePanel.LockedCheckbox:ClearAllPoints();
 MenuFramePanel.LockedCheckbox:SetPoint("TOPLEFT", 350, -53);
 getglobal(MenuFramePanel.LockedCheckbox:GetName().."Text"):SetText("Frames Locked");
+
 
 MenuFramePanel.LockedCheckbox:SetScript("OnClick", function(self)
 	if MenuFramePanel.LockedCheckbox:GetChecked() then
@@ -134,13 +138,14 @@ MenuFramePanel.LockedCheckbox:SetScript("OnClick", function(self)
 		QueueStatusButton:Show()
 	end
 end);
+]]
 
 ------------------------------------------------------------------------------------------------------------------
 
 --frames movable
 MenuFramePanel.AccountCheckbox = CreateFrame("CheckButton", "AccountCheckbox", MenuFramePanel, "UICheckButtonTemplate");
 MenuFramePanel.AccountCheckbox:ClearAllPoints();
-MenuFramePanel.AccountCheckbox:SetPoint("TOPLEFT", 350, -53*2);
+MenuFramePanel.AccountCheckbox:SetPoint("TOPLEFT", 350, -53);
 getglobal(MenuFramePanel.AccountCheckbox:GetName().."Text"):SetText("Account-Wide Settings");
 
 MenuFramePanel.AccountCheckbox:SetScript("OnClick", function(self)
@@ -175,7 +180,7 @@ MenuEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 function MenuEventFrame.ReMoveStuff()
 
-	MenuFramePanel.LockedCheckbox:SetChecked(MoveMenusALL_DB.locked);
+	--MenuFramePanel.LockedCheckbox:SetChecked(MoveMenusALL_DB.locked); --Farewell, dungeon eyeball.
 	MenuFramePanel.AccountCheckbox:SetChecked(MoveMenusALL_DB.account);
 
 	if MoveMenusALL_DB.account == true then -- account settings
@@ -183,7 +188,7 @@ function MenuEventFrame.ReMoveStuff()
 		--MenuFramePanel.MicroMenuSlider:SetValue(MoveMenusALL_DB.MicromenuFrame.scale*100);
 		--MenuFramePanel.BagButtonsSlider:SetValue(MoveMenusALL_DB.BagbuttonsFrame.scale*100);
 		MenuFramePanel.XPBarSlider:SetValue(MoveMenusALL_DB.XPBarFrame.scale*100);
-		MenuFramePanel.QueueSlider:SetValue(MoveMenusALL_DB.QueueButton.scale*100);
+		--MenuFramePanel.QueueSlider:SetValue(MoveMenusALL_DB.QueueButton.scale*100); --Farewell, dungeon eyeball.
 		
 		--[[ -- defunct in 10.0.5
 		MicroButtonAndBagsBar:ClearAllPoints()
@@ -194,10 +199,10 @@ function MenuEventFrame.ReMoveStuff()
 		MainMenuBarBackpackButton:SetScale(MoveMenusALL_DB.BagbuttonsFrame.scale);
 		StatusTrackingBarManager:ClearAllPoints()
 		StatusTrackingBarManager:SetPoint(MoveMenusALL_DB.XPBarFrame.point, UIParent, MoveMenusALL_DB.XPBarFrame.relativePoint, MoveMenusALL_DB.XPBarFrame.x, MoveMenusALL_DB.XPBarFrame.y);
-		]]
 		QueueStatusButton:ClearAllPoints()
 		QueueStatusButton:SetPoint(MoveMenusALL_DB.QueueButton.point, UIParent, MoveMenusALL_DB.QueueButton.relativePoint, MoveMenusALL_DB.QueueButton.x, MoveMenusALL_DB.QueueButton.y);
 		QueueStatusButton:SetScale(MoveMenusALL_DB.QueueButton.scale);
+		]] --Farewell, dungeon eyeball.
 
 		StatusTrackingBarManager:SetScale(MoveMenusALL_DB.XPBarFrame.scale);
 
@@ -219,10 +224,10 @@ function MenuEventFrame.ReMoveStuff()
 		MainMenuBarBackpackButton:SetScale(MoveMenusF_DB.BagbuttonsFrame.scale);
 		StatusTrackingBarManager:ClearAllPoints()
 		StatusTrackingBarManager:SetPoint(MoveMenusF_DB.XPBarFrame.point, UIParent, MoveMenusF_DB.XPBarFrame.relativePoint, MoveMenusF_DB.XPBarFrame.x, MoveMenusF_DB.XPBarFrame.y);
-		]]
 		QueueStatusButton:ClearAllPoints()
 		QueueStatusButton:SetPoint(MoveMenusF_DB.QueueButton.point, UIParent, MoveMenusF_DB.QueueButton.relativePoint, MoveMenusF_DB.QueueButton.x, MoveMenusF_DB.QueueButton.y);
 		QueueStatusButton:SetScale(MoveMenusF_DB.QueueButton.scale);
+		]] --Farewell, dungeon eyeball.
 
 		StatusTrackingBarManager:SetScale(MoveMenusF_DB.XPBarFrame.scale);
 
@@ -233,9 +238,11 @@ end
 
 function MenuEventFrame.Stuff(frame,button)
 	frame:SetMovable(true);
+	--[[ --Farewell, dungeon eyeball.
 	if not MicroButtonAndBagsBar then
 		frame:EnableMouse(true);
 	end
+	]]
 	frame:SetUserPlaced(true);
 	frame:RegisterForDrag("LeftButton", "RightButton");
 	frame:SetClampedToScreen(true)
@@ -331,6 +338,7 @@ function MenuEventFrame.Stuff(frame,button)
 				MoveMenusF_DB.XPBarFrame.y = yOfs
 			end
 		end
+		--[[ --Farewell, dungeon eyeball.
 		if frame == QueueStatusButton then
 			Mixin(self, BackdropTemplateMixin);
 			frame:SetBackdropColor(0,0,0,0);
@@ -355,6 +363,7 @@ function MenuEventFrame.Stuff(frame,button)
 				MoveMenusF_DB.QueueButton.y = yOfs
 			end
 		end
+		]]
 	end);
 end
 
@@ -375,32 +384,37 @@ function MenuEventFrame:OnEvent(event,arg1)
 			MoveMenusALL_DB.account = true
 		end
 
+		--[[ --Farewell, dungeon eyeball.
 		if not MoveMenusF_DB.MicromenuFrame.scale then
 			MoveMenusF_DB.MicromenuFrame.scale = defaultsTable.MicromenuFrame.scale;
 			MoveMenusF_DB.BagbuttonsFrame.scale = defaultsTable.BagbuttonsFrame.scale;
 			MoveMenusF_DB.XPBarFrame.scale = defaultsTable.XPBarFrame.scale;
 		end
+		]]
 		if not MoveMenusALL_DB.locked then
 			MoveMenusALL_DB.locked = defaultsTable.locked;
 		end
+		--[[ --Farewell, dungeon eyeball.
 		if MoveMenusALL_DB.locked == false then
 			MicroButtonAndBagsBar:EnableMouse(true)
-			QueueStatusButton:Show()
+			--QueueStatusButton:Show() --Farewell, dungeon eyeball.
 		end
+		]]
 		--MicroButtonAndBagsBar:EnableMouse(not MoveMenusALL_DB.locked); -- this could maybe cause issues later, we'll see
 		--MenuEventFrame.Stuff(MicroButtonAndBagsBar);
 		--MenuEventFrame.Stuff(MainMenuBarBackpackButton);
 		--MenuEventFrame.Stuff(StatusTrackingBarManager); --(movement is now handled by default UI)
-		MenuEventFrame.Stuff(QueueStatusButton);
+		--MenuEventFrame.Stuff(QueueStatusButton); --Farewell, dungeon eyeball.
 
 		MenuEventFrame.ReMoveStuff()
 		
 	end
 	if event == "PLAYER_LOGOUT" then
-		MicroButtonAndBagsBar:ClearAllPoints();
-		MainMenuBarBackpackButton:ClearAllPoints();
+		--MicroButtonAndBagsBar:ClearAllPoints(); --Farewell, dungeon eyeball.
+		--MainMenuBarBackpackButton:ClearAllPoints();
 		StatusTrackingBarManager:ClearAllPoints();
 	end
+	--[[ --Farewell, dungeon eyeball.
 	if event == "PLAYER_ENTERING_WORLD" then
 		MicroButtonAndBagsBar:EnableMouse(false)
 		if MoveMenusALL_DB.locked == false then
@@ -408,5 +422,6 @@ function MenuEventFrame:OnEvent(event,arg1)
 			QueueStatusButton:Show()
 		end
 	end
+	]]
 end
 MenuEventFrame:SetScript("OnEvent",MenuEventFrame.OnEvent);

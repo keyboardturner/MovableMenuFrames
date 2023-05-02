@@ -1,8 +1,9 @@
-## Interface: 100007
+## Interface: 100100
 ## Title: Movable Menu Frames
-## Notes: Allows the micromenu, bag buttons, and XP Bar frames to be resizeable and movable.
+## Notes: Allows the XP Bar frames to be resizeable. (Many features are now integrated into Edit Mode)
+## IconTexture: Interface/Addons/MovableMenuFrames/movablemenuframes.blp
 ## Author: Keyboardturn
-## Version: 0.0.6
+## Version: 0.0.7
 ## SavedVariablesPerCharacter: MoveMenusF_DB
 ## SavedVariables: MoveMenusALL_DB
 
