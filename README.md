@@ -14,3 +14,6 @@ Allows the micromenu, bag buttons, and XP Bar frames to be resizeable and movabl
 ## Features list todo:
 
 - add global vs. character savedvariables option
+
+
+A link to my discord for addon projects and other things can be found [here](https://discord.gg/tA4rrmjPp8).
