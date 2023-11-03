@@ -1,10 +1,13 @@
-## Interface: 100107
+## Interface: 100200
 ## Title: Movable Menu Frames
 ## Notes: Allows the XP Bar frames to be resizeable. (Many features are now integrated into Edit Mode)
 ## IconTexture: Interface/Addons/MovableMenuFrames/movablemenuframes.blp
 ## Author: Keyboardturn
-## Version: 0.0.9
+## Version: @project-version@
 ## SavedVariablesPerCharacter: MoveMenusF_DB
 ## SavedVariables: MoveMenusALL_DB
+## X-Curse-Project-ID: 695583
+## X-WoWI-ID: 26483
+## X-Wago-ID: baNDvAKo
 
 MovableMenuFrames.lua
