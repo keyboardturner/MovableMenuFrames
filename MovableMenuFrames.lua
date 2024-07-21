@@ -27,7 +27,7 @@ MenuFramePanel.Version:SetFont(MenuFramePanel.Version:GetFont(), 12);
 MenuFramePanel.Version:SetTextColor(1,1,1,1);
 MenuFramePanel.Version:ClearAllPoints();
 MenuFramePanel.Version:SetPoint("TOPLEFT", MenuFramePanel, "TOPLEFT",400,-21);
-MenuFramePanel.Version:SetText("Version: " .. GetAddOnMetadata("MovableMenuFrames", "Version"));
+MenuFramePanel.Version:SetText("Version: " .. C_AddOns.GetAddOnMetadata("MovableMenuFrames", "Version"));
 
 MenuFramePanel.Update = MenuFramePanel:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 MenuFramePanel.Update:SetFont(MenuFramePanel.Update:GetFont(), 14);
@@ -163,7 +163,9 @@ end);
 ------------------------------------------------------------------------------------------------------------------
 
 --final
-InterfaceOptions_AddCategory(MenuFramePanel);
+local category, layout = Settings.RegisterCanvasLayoutCategory(MenuFramePanel, MenuFramePanel.name, MenuFramePanel.name);
+category.ID = MenuFramePanel.name;
+Settings.RegisterAddOnCategory(category)
 
 --MicroButtonAndBagsBar
 --defaults: BOTTOMRIGHT UIParent BOTTOMRIGHT 0 0
