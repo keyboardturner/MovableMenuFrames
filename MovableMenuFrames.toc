@@ -1,4 +1,4 @@
-## Interface: 110005, 110007
+## Interface: 110100
 ## Title: Movable Menu Frames
 ## Notes: Allows the XP Bar frames to be resizeable. (Many features are now integrated into Edit Mode)
 ## IconTexture: Interface/Addons/MovableMenuFrames/movablemenuframes.blp
