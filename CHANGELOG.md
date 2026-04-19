@@ -1,3 +1,7 @@
+# 0.2.5
+
+12.0.5 toc update
+
 # 0.2.4
 
 12.0.1 toc update
